@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Home Tailor - Order Tracking</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    color: #222;
+}
+
+header {
+    background: #111827;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+header p {
+    margin: 8px 0 0;
+    color: #d1d5db;
+}
+
+.container {
+    width: 92%;
+    max-width: 900px;
+    margin: 30px auto;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+}
+
+.hidden {
+    display: none;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+button {
+    width: 100%;
+    padding: 13px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 8px;
+    background: #111827;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+.back-btn {
+    background: #6b7280;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 7px 0 15px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+label {
+    font-weight: bold;
+}
+
+.row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.item-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 10px;
+}
+
+.amount-box {
+    background: #f3f4f6;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.success {
+    color: green;
+    font-weight: bold;
+}
+
+.error {
+    color: red;
+    font-weight: bold;
+}
+
+.customer-box {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 18px;
+    margin-top: 15px;
+}
+
+.status {
+    padding: 8px;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+.status-received {
+    background: #e5e7eb;
+}
+
+.status-cutting {
+    background: #fef3c7;
+}
+
+.status-stitching {
+    background: #dbeafe;
+}
+
+.status-finishing {
+    background: #ede9fe;
+}
+
+.status-ready {
+    background: #dcfce7;
+}
+
+.small-btn {
+    width: auto;
+    padding: 8px 15px;
+    margin-right: 5px;
+}
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #777;
+}
+
+@media(max-width: 600px) {
+
+    .row,
+    .item-row {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<h1>🧵 Home Tailor</h1>
+
+<p>Tailor Order Tracking</p>
+
+</header>
+
+
+<!-- HOME PAGE -->
+
+<div id="homePage" class="container">
+
+<div class="card">
+
+<h2>Welcome to Home Tailor</h2>
+
+<p style="text-align:center;">
+Track your tailoring order easily.
+</p>
+
+<button onclick="showAdminLogin()">
+🔐 Admin Login
+</button>
+
+<button onclick="showCustomerLogin()">
+👤 Customer Login
+</button>
+
+</div>
+
+</div>
+
+
+<!-- ADMIN LOGIN -->
+
+<div id="adminLoginPage" class="container hidden">
+
+<div class="card">
+
+<h2>🔐 Admin Login</h2>
+
+<label>Admin ID</label>
+
+<input
+type="text"
+id="adminId"
+placeholder="Enter Admin ID"
+>
+
+<label>Admin Password</label>
+
+<input
+type="password"
+id="adminPassword"
+placeholder="Enter Admin Password"
+>
+
+<p id="adminError" class="error"></p>
+
+<button onclick="adminLogin()">
+Login
+</button>
+
+<button class="back-btn" onclick="goHome()">
+← Back
+</button>
+
+</div>
+
+</div>
+
+
+<!-- CUSTOMER LOGIN -->
+
+<div id="customerLoginPage" class="container hidden">
+
+<div class="card">
+
+<h2>👤 Customer Login</h2>
+
+<label>Customer ID</label>
+
+<input
+type="text"
+id="loginCustomerId"
+placeholder="Example: TLR001"
+>
+
+<label>Customer Password</label>
+
+<input
+type="password"
+id="loginCustomerPassword"
+placeholder="Enter Password"
+>
+
+<p id="customerError" class="error"></p>
+
+<button onclick="customerLogin()">
+Login
+</button>
+
+<button class="back-btn" onclick="goHome()">
+← Back
+</button>
+
+</div>
+
+</div>
+
+
+<!-- ADMIN DASHBOARD -->
+
+<div id="adminDashboard" class="container hidden">
+
+<div class="card">
+
+<h2>🛠️ Admin Dashboard</h2>
+
+<p class="success">
+Admin Login Successful!
+</p>
+<div class="summary-cards">
+
+    <div class="summary-card">
+        <h3>👥 Total Customers</h3>
+        <p id="totalCustomers">0</p>
+    </div>
+
+    <div class="summary-card">
+        <h3>📦 Total Orders</h3>
+        <p id="totalOrders">0</p>
+    </div>
+
+    <div class="summary-card">
+        <h3>💰 Pending Amount</h3>
+        <p id="pendingAmount">₹0</p>
+    </div>
+
+    <div class="summary-card">
+        <h3>✅ Ready Orders</h3>
+        <p id="readyOrders">0</p>
+    </div>
+
+</div>
+<button onclick="showAddCustomer()">
+➕ Add New Customer
+</button>
+
+<button onclick="showCustomers()">
+👥 View Customers & Orders
+</button>
+
+<button class="back-btn" onclick="logout()">
+🚪 Logout
+</button>
+
+</div>
+
+
+<!-- ADD CUSTOMER -->
+
+<div id="addCustomerPage" class="card hidden">
+
+<h2>➕ Add New Customer</h2>
+
+
+<label>Customer ID</label>
+
+<input
+type="text"
+id="customerId"
+placeholder="Example: TLR001"
+>
+
+
+<label>Customer Password</label>
+
+<input
+type="password"
+id="customerPassword"
+placeholder="Create password"
+>
+
+
+<label>Customer Name</label>
+
+<input
+type="text"
+id="customerName"
+placeholder="Customer name"
+>
+
+
+<label>Mobile Number</label>
+
+<input
+type="tel"
+id="mobile"
+placeholder="Mobile number"
+>
+
+
+<div class="row">
+
+<div>
+
+<label>Order Date</label>
+
+<input
+type="date"
+id="orderDate"
+>
+
+</div>
+
+<div>
+
+<label>Delivery Date</label>
+
+<input
+type="date"
+id="deliveryDate"
+>
+
+</div>
+
+</div>
+
+
+<label>Measurements / Notes</label>
+
+<textarea
+id="measurements"
+rows="4"
+placeholder="Enter measurements or special instructions"
+></textarea>
+
+
+<h3>👕 Clothes / Items</h3>
+
+
+<div class="item-row">
+
+<input
+type="text"
+id="item1"
+placeholder="Item name"
+>
+
+<input
+type="number"
+id="quantity1"
+placeholder="Quantity"
+min="0"
+value="1"
+>
+
+<input
+type="number"
+id="rate1"
+placeholder="Rate"
+min="0"
+value="0"
+oninput="calculateAmount()"
+>
+
+</div>
+
+
+<div class="item-row">
+
+<input
+type="text"
+id="item2"
+placeholder="Item name"
+>
+
+<input
+type="number"
+id="quantity2"
+placeholder="Quantity"
+min="0"
+value="0"
+>
+
+<input
+type="number"
+id="rate2"
+placeholder="Rate"
+min="0"
+value="0"
+oninput="calculateAmount()"
+>
+
+</div>
+
+
+<div class="item-row">
+
+<input
+type="text"
+id="item3"
+placeholder="Item name"
+>
+
+<input
+type="number"
+id="quantity3"
+placeholder="Quantity"
+min="0"
+value="0"
+>
+
+<input
+type="number"
+id="rate3"
+placeholder="Rate"
+min="0"
+value="0"
+oninput="calculateAmount()"
+>
+
+</div>
+
+
+<div class="amount-box">
+
+<label>Total Amount</label>
+
+<input
+type="number"
+id="totalAmount"
+value="0"
+readonly
+>
+
+
+<label>Paid / Advance Amount</label>
+
+<input
+type="number"
+id="paidAmount"
+value="0"
+min="0"
+oninput="calculateRemaining()"
+>
+
+
+<label>Remaining Amount</label>
+
+<input
+type="number"
+id="remainingAmount"
+value="0"
+readonly
+>
+
+</div>
+
+
+<label>Order Status</label>
+
+<select id="orderStatus">
+
+<option value="Received">📦 Received</option>
+
+<option value="Cutting">✂️ Cutting</option>
+
+<option value="Stitching">🧵 Stitching</option>
+
+<option value="Finishing">✨ Finishing</option>
+
+<option value="Ready">✅ Ready</option>
+
+</select>
+
+
+<button onclick="saveCustomer()">
+💾 Save Customer
+</button>
+
+<button
+class="back-btn"
+onclick="hideAddCustomer()"
+>
+← Back
+</button>
+
+</div>
+
+
+<!-- CUSTOMER LIST -->
+
+<div id="customerListPage" class="card hidden">
+
+<h2>👥 Customers & Orders</h2>
+
+<div id="customerList"></div>
+
+<button class="back-btn" onclick="hideCustomers()">
+← Back
+</button>
+
+</div>
+
+</div>
+
+
+<!-- CUSTOMER DASHBOARD -->
+
+<div id="customerDashboard" class="container hidden">
+
+<div class="card">
+
+<h2>👤 My Order</h2>
+
+<div id="customerDetails"></div>
+
+<button class="back-btn" onclick="logout()">
+🚪 Logout
+</button>
+
+</div>
+
+</div>
+
+
+<footer>
+
+© 2026 Home Tailor
+
+</footer>
+
+
+<script>
+
+
+// ==========================
+// PAGE FUNCTIONS
+// ==========================
+
+function hideAllPages() {
+
+    document.getElementById("homePage")
+        .classList.add("hidden");
+
+    document.getElementById("adminLoginPage")
+        .classList.add("hidden");
+
+    document.getElementById("customerLoginPage")
+        .classList.add("hidden");
+
+    document.getElementById("adminDashboard")
+        .classList.add("hidden");
+
+    document.getElementById("customerDashboard")
+        .classList.add("hidden");
+
+}
+
+
+function goHome() {
+
+    hideAllPages();
+
+    document.getElementById("homePage")
+        .classList.remove("hidden");
+
+}
+
+
+function showAdminLogin() {
+
+    hideAllPages();
+
+    document.getElementById("adminLoginPage")
+        .classList.remove("hidden");
+
+}
+function showCustomerLogin() {
+
+    hideAllPages();
+
+    document.getElementById("customerLoginPage")
+        .classList.remove("hidden");
+
+}
+
+
+// ==========================
+// ADMIN LOGIN
+// ==========================
+
+function adminLogin() {
+
+    let id =
+        document.getElementById("adminId").value.trim();
+
+    let password =
+        document.getElementById("adminPassword").value;
+
+    if (id === "admin" && password === "admin123") {
+
+        document.getElementById("adminError")
+            .innerText = "";
+
+        hideAllPages();
+
+        document.getElementById("adminDashboard")
+            .classList.remove("hidden");
+updateSummaryCards();
+    } else {
+
+        document.getElementById("adminError")
+            .innerText =
+            "Wrong Admin ID or Password.";
+
+    }
+
+}
+
+
+// ==========================
+// ADD CUSTOMER PAGE
+// ==========================
+
+function showAddCustomer() {
+
+    document.getElementById("addCustomerPage")
+        .classList.remove("hidden");
+
+    document.getElementById("customerListPage")
+        .classList.add("hidden");
+
+}
+
+
+function hideAddCustomer() {
+
+    document.getElementById("addCustomerPage")
+        .classList.add("hidden");
+
+}
+
+
+function showCustomers() {
+
+    document.getElementById("customerListPage")
+        .classList.remove("hidden");
+
+    document.getElementById("addCustomerPage")
+        .classList.add("hidden");
+
+    displayCustomers();
+
+}
+
+
+function hideCustomers() {
+
+    document.getElementById("customerListPage")
+        .classList.add("hidden");
+
+}
+
+
+// ==========================
+// AMOUNT CALCULATION
+// ==========================
+
+function calculateAmount() {
+
+    let q1 =
+        Number(document.getElementById("quantity1").value);
+
+    let r1 =
+        Number(document.getElementById("rate1").value);
+
+    let q2 =
+        Number(document.getElementById("quantity2").value);
+
+    let r2 =
+        Number(document.getElementById("rate2").value);
+
+    let q3 =
+        Number(document.getElementById("quantity3").value);
+
+    let r3 =
+        Number(document.getElementById("rate3").value);
+
+
+    let total =
+        (q1 * r1) +
+        (q2 * r2) +
+        (q3 * r3);
+
+
+    document.getElementById("totalAmount").value =
+        total;
+
+
+    calculateRemaining();
+
+}
+
+
+function calculateRemaining() {
+
+    let total =
+        Number(document.getElementById("totalAmount").value);
+
+    let paid =
+        Number(document.getElementById("paidAmount").value);
+
+
+    let remaining =
+        total - paid;
+
+
+    if (remaining < 0) {
+
+        remaining = 0;
+
+    }
+
+
+    document.getElementById("remainingAmount").value =
+        remaining;
+
+}
+
+
+// ==========================
+// SAVE CUSTOMER
+// ==========================
+
+function saveCustomer() {
+
+    let customerId =
+        document.getElementById("customerId").value.trim();
+
+    let customerPassword =
+        document.getElementById("customerPassword").value;
+
+    let customerName =
+        document.getElementById("customerName").value.trim();
+
+    let mobile =
+        document.getElementById("mobile").value.trim();
+
+    let orderDate =
+        document.getElementById("orderDate").value;
+
+    let deliveryDate =
+        document.getElementById("deliveryDate").value;
+
+    let measurements =
+        document.getElementById("measurements").value.trim();
+
+    let totalAmount =
+        Number(document.getElementById("totalAmount").value);
+
+    let paidAmount =
+        Number(document.getElementById("paidAmount").value);
+
+    let remainingAmount =
+        Number(document.getElementById("remainingAmount").value);
+
+    let orderStatus =
+        document.getElementById("orderStatus").value;
+
+
+    if (
+        customerId === "" ||
+        customerPassword === "" ||
+        customerName === ""
+    ) {
+
+        alert(
+            "Please enter Customer ID, Password and Customer Name."
+        );
+
+        return;
+
+    }
+
+
+    let customers =
+        JSON.parse(
+            localStorage.getItem("tailorCustomers")
+        ) || [];
+
+
+    let existing =
+        customers.find(
+            c => c.id === customerId
+        );
+
+
+    if (existing) {
+
+        alert("Customer ID already exists.");
+
+        return;
+
+    }
+
+
+    let customer = {
+
+        id: customerId,
+
+        password: customerPassword,
+
+        name: customerName,
+
+        mobile: mobile,
+
+        orderDate: orderDate,
+
+        deliveryDate: deliveryDate,
+
+        measurements: measurements,
+
+        items: [
+
+            {
+                name:
+                    document.getElementById("item1").value,
+
+                quantity:
+                    Number(document.getElementById("quantity1").value),
+
+                rate:
+                    Number(document.getElementById("rate1").value)
+
+            },
+
+            {
+                name:
+                    document.getElementById("item2").value,
+
+                quantity:
+                    Number(document.getElementById("quantity2").value),
+
+                rate:
+                    Number(document.getElementById("rate2").value)
+
+            },
+
+            {
+                name:
+                    document.getElementById("item3").value,
+
+                quantity:
+                    Number(document.getElementById("quantity3").value),
+
+                rate:
+                    Number(document.getElementById("rate3").value)
+
+            }
+
+        ],
+
+        total:
+            totalAmount,
+
+        paid:
+            paidAmount,
+
+        remaining:
+            remainingAmount,
+
+        status:
+            orderStatus
+
+    };
+
+
+    customers.push(customer);
+
+
+    localStorage.setItem(
+        "tailorCustomers",
+        JSON.stringify(customers)
+    );
+
+
+    alert("Customer saved successfully!");
+
+
+    clearForm();
+
+
+    hideAddCustomer();
+
+
+    displayCustomers();
+
+}
+
+
+// ==========================
+// CLEAR FORM
+// ==========================
+
+function clearForm() {
+
+    document.getElementById("customerId").value = "";
+
+    document.getElementById("customerPassword").value = "";
+
+    document.getElementById("customerName").value = "";
+
+    document.getElementById("mobile").value = "";
+
+    document.getElementById("orderDate").value = "";
+
+    document.getElementById("deliveryDate").value = "";
+
+    document.getElementById("measurements").value = "";
+
+    document.getElementById("item1").value = "";
+
+    document.getElementById("quantity1").value = "1";
+
+    document.getElementById("rate1").value = "0";
+
+    document.getElementById("item2").value = "";
+
+    document.getElementById("quantity2").value = "0";
+
+    document.getElementById("rate2").value = "0";
+
+    document.getElementById("item3").value = "";
+
+    document.getElementById("quantity3").value = "0";
+
+    document.getElementById("rate3").value = "0";
+
+    document.getElementById("totalAmount").value = "0";
+
+    document.getElementById("paidAmount").value = "0";
+
+    document.getElementById("remainingAmount").value = "0";
+
+    document.getElementById("orderStatus").value = "Received";
+
+}
+
+
+// ==========================
+// DISPLAY CUSTOMERS
+// ==========================
+
+function displayCustomers() {
+
+    let customers =
+        JSON.parse(
+            localStorage.getItem("tailorCustomers")
+        ) || [];
+
+
+    let list =
+        document.getElementById("customerList");
+
+
+    if (customers.length === 0) {
+
+        list.innerHTML =
+            "<p>No customers added yet.</p>";
+
+        return;
+
+    }
+
+
+    list.innerHTML = "";
+
+
+    customers.forEach(
+        (customer, index) => {
+
+            let box =
+                document.createElement("div");
+
+            box.className =
+                "customer-box";
+
+
+            box.innerHTML = `
+
+                <h3>
+                    👤 ${customer.name}
+                </h3>
+
+                <p>
+                    <b>Customer ID:</b>
+                    ${customer.id}
+                </p>
+
+                <p>
+                    <b>Mobile:</b>
+                    ${customer.mobile}
+                </p>
+
+                <p>
+                    <b>Order Date:</b>
+                    ${customer.orderDate}
+                </p>
+
+                <p>
+                    <b>Delivery Date:</b>
+                    ${customer.deliveryDate}
+                </p>
+
+                <p>
+                    <b>Total:</b>
+                    ₹${customer.total}
+                </p>
+
+                <p>
+                    <b>Paid:</b>
+                    ₹${customer.paid}
+                </p>
+
+                <p>
+                    <b>Remaining:</b>
+                    ₹${customer.remaining}
+                </p>
+
+                <p>
+                    <b>Status:</b>
+                    ${customer.status}
+                </p>
+
+                <button
+                    class="small-btn"
+                    onclick="changeStatus(${index})"
+                >
+                    Update Status
+                </button>
+
+                <button
+                    class="small-btn"
+                    onclick="deleteCustomer(${index})"
+                >
+                    Delete
+                </button>
+
+            `;
+
+
+            list.appendChild(box);
+
+        }
+    );
+
+}
+
+
+// ==========================
+// CHANGE STATUS
+// ==========================
+
+function changeStatus(index) {
+
+    let customers =
+        JSON.parse(
+            localStorage.getItem("tailorCustomers")
+        ) || [];
+
+
+    let newStatus =
+        prompt(
+            "Enter status:\nReceived\nCutting\nStitching\nFinishing\nReady",
+            customers[index].status
+        );
+
+
+    if (
+        newStatus === null ||
+        newStatus.trim() === ""
+    ) {
+
+        return;
+
+    }
+
+
+    customers[index].status =
+        newStatus;
+
+
+    localStorage.setItem(
+        "tailorCustomers",
+        JSON.stringify(customers)
+    );
+
+
+    displayCustomers();
+
+}
+
+
+// ==========================
+// DELETE CUSTOMER
+// ==========================
+
+function deleteCustomer(index) {
+
+    let customers =
+        JSON.parse(
+            localStorage.getItem("tailorCustomers")
+        ) || [];
+
+
+    if (
+        confirm(
+            "Are you sure you want to delete this customer?"
+        )
+    ) {
+
+        customers.splice(index, 1);
+
+
+        localStorage.setItem(
+            "tailorCustomers",
+            JSON.stringify(customers)
+        );
+
+
+        displayCustomers();
+
+    }
+
+}
+
+
+// ==========================
+// CUSTOMER LOGIN
+// ==========================
+
+function customerLogin() {
+
+    let id =
+        document.getElementById("loginCustomerId")
+            .value.trim();
+
+    let password =
+        document.getElementById("loginCustomerPassword")
+            .value;
+
+
+    let customers =
+        JSON.parse(
+            localStorage.getItem("tailorCustomers")
+        ) || [];
+
+
+    let customer =
+        customers.find(
+            c =>
+                c.id === id &&
+                c.password === password
+        );
+
+
+    if (!customer) {
+
+        document.getElementById("customerError")
+            .innerText =
+            "Invalid Customer ID or Password.";
+
+        return;
+
+    }
+
+
+    document.getElementById("customerError")
+        .innerText = "";
+
+
+    hideAllPages();
+
+
+    document.getElementById("customerDashboard")
+        .classList.remove("hidden");
+
+
+    showCustomerDetails(customer);
+
+}
+
+
+// ==========================
+// SHOW CUSTOMER DETAILS
+// ==========================
+
+function showCustomerDetails(customer) {
+
+    let details =
+        document.getElementById("customerDetails");
+
+
+    let itemsHTML = "";
+
+
+    customer.items.forEach(
+        item => {
+
+            if (item.name !== "") {
+
+                itemsHTML += `
+
+                    <p>
+                        👕 <b>${item.name}</b>
+                        -
+                        Quantity: ${item.quantity}
+                        -
+                        Rate: ₹${item.rate}
+                    </p>
+
+                `;
+
+            }
+
+        }
+    );
+
+
+    details.innerHTML = `
+
+        <p>
+            <b>Customer ID:</b>
+            ${customer.id}
+        </p>
+
+        <p>
+            <b>Name:</b>
+            ${customer.name}
+            </p>
+
+        <p>
+            <b>Mobile:</b>
+            ${customer.mobile}
+        </p>
+
+        <p>
+            <b>Order Date:</b>
+            ${customer.orderDate}
+        </p>
+
+        <p>
+            <b>Delivery Date:</b>
+            ${customer.deliveryDate}
+        </p>
+
+        <p>
+            <b>Measurements:</b>
+            ${customer.measurements}
+        </p>
+
+        <h3>👕 Clothes / Items</h3>
+
+        ${itemsHTML}
+
+        <p>
+            <b>Total Amount:</b>
+            ₹${customer.total}
+        </p>
+
+        <p>
+            <b>Paid Amount:</b>
+            ₹${customer.paid}
+        </p>
+
+        <p>
+            <b>Remaining Amount:</b>
+            ₹${customer.remaining}
+        </p>
+
+        <p>
+            <b>Order Status:</b>
+            ${customer.status}
+        </p>
+
+    `;
+
+}
+function logout() {
+    hideAllPages();
+    document.getElementById("homePage").classList.remove("hidden");
+}
+function updateSummaryCards() {
+    let customers = JSON.parse(localStorage.getItem("tailorCustomers")) || [];
+
+    document.getElementById("totalCustomers").innerText = customers.length;
+
+    document.getElementById("totalOrders").innerText = customers.length;
+
+    let pending = customers.reduce(function(total, customer) {
+        return total + Number(customer.remaining || 0);
+    }, 0);
+
+    document.getElementById("pendingAmount").innerText = "₹" + pending;
+
+    let ready = customers.filter(function(customer) {
+        return customer.status === "Ready";
+    }).length;
+
+    document.getElementById("readyOrders").innerText = ready;
+}
+</script>
